@@ -1,0 +1,34 @@
+name: Install and cache cypress
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: npm-packages-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-packages-
+          
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache
+          key: npm-packages-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: npm-packages-
+
+      - name: Install and cache 
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Install Cypress only
+        run: |
+          npm install cypress --save-dev
+        env:
+          CI: true
